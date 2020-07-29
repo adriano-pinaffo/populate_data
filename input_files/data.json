@@ -1,0 +1,59 @@
+{
+  "tables": [
+    {"customers": {
+      "quantity": 70,
+      "items": ["name", "surname", "children", "birthday", "city", "address"]}
+    },
+    {"customers_vip": {
+      "quantity": 15,
+      "drop_if_exists": true,
+      "id_increment": false,
+      "items": ["name", "surname", "children", "birthday", "city", "address", "cvisa", "cvisa_cvv", "cmastercard", "cmastercard_cvv"]}
+    },
+    {"hr": {
+      "quantity": 8,
+      "drop_if_exists": true,
+      "items": ["name", "surname", "country", "phone"]}
+    },
+    {"procurement": {
+      "quantity": 10,
+      "id_increment": true,
+      "items": ["name", "surname", "phone", "salary", "email", "username"]}
+    },
+    {"sales_dept": {
+      "quantity": 30,
+      "id_increment": true,
+      "items": ["name", "surname", "phone", "salary"]}
+    },
+    {"legal": {
+      "quantity": 5,
+      "drop_if_exists": true,
+      "items": ["name", "surname", "email", "city"]}
+    },
+    {"products": {
+      "quantity": 70,
+      "drop_if_exists": true,
+      "extra": ["product"],
+      "items": ["stock", "price"]}
+    },
+    {"suppliers": {
+      "quantity": 40,
+      "items": ["company", "city", "address", "contact", "email"]}
+    },
+    {"suppliers_production": {
+      "quantity": 20,
+      "drop_if_exists": true,
+      "items": ["company", "city", "address", "contact", "email"]}
+    }
+  ],
+  "transactions": [
+    {"sales": {
+      "quantity": 80,
+      "drop_if_exists": true,
+      "items": [{"customers": "id"}, {"products": "name"}, {"sales_dept": "id"}, "quantity", "date", "invoice"]}
+    },
+    {"supplies": {
+      "quantity": 40,
+      "items": [{"suppliers": "id"}, {"products": "name"}, "quantity", "date", "invoice"]}
+    }
+  ]}

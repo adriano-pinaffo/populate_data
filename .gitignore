@@ -1,0 +1,12 @@
+# bytecode cache folder
+__pycache__
+
+# Linters added by my IDE
+.eslintrc.json
+.htmlhintrc
+.prettierrc.json
+.stylelintrc.json
+
+# NPM modules
+node_modules
+package*.json
