@@ -516,7 +516,7 @@ def do_tables(tbs, db):
             params = Post_Creator(al=args_list, row_qty=qty)
 
             ws.wprint('Downloading ' + table_name + '...', 2)
-            resp = requests.post(params.url, data=params.data, headers=params.headers)
+            resp = requests.post(params.url, data=params.data, headers=params.headers, timeout=5)
             if (resp.status_code != 200):
                 raise ConnectionError
             ws.wprint('Downloaded', 3)
@@ -534,7 +534,7 @@ def do_tables(tbs, db):
                     header = {'Referer': baseurl + '/things' + '?' + '&'.join([key + '=' + str(querystring[key]) for key in list(querystring.keys())])}  # noqa:E501
                     try:
                         ws.wprint('Downloading produt names...', 2)
-                        resp_prod = requests.get(url, params=querystring, headers=header)
+                        resp_prod = requests.get(url, params=querystring, headers=header, timeout=5)
                         if resp_prod.status_code != 200:
                             raise BaseException
                         prodprep = Product_Prepare()
