@@ -41,6 +41,32 @@ def usage(*args, **kwargs):
         '    The same line in JSON format would be:\n' +  # noqa:E501,W504
         f'    $ python {sys.argv[0]}' + """ -vv -u dbuser -p dbpass -d test --drop_if_exists -t '{"customers": {"quantity": 70, "items": ["name", "surname", "children", "birthday", "city", "address"]}}' -t '{"sales_dept": {"quantity": 8, "id_increment": true, "items": ["name", "surname", "user_id", "salary"]}}' -t '{"products": {"quantity": 70, "drop_if_exists": true, "extra": ["product"],"items": ["stock", "price"]}}' -x '{"sales": {"quantity": 80, "drop_if_exists": true, "items": [{"customers": "id"}, {"products": "name"}, {"sales_dept": "id"}, "quantity", "date", "invoice"]}}'\n\n""" +  # noqa:E501,W504
         '    - Explanation: This has the same effect as the previous example but it uses JSON format for the `-t` and `-x` options. The main difference is that the options like drop_if_exists and id_increment are optional here, meaning the program will assume default values if they are not present globally by the use of --drop_if_exists or --id_increment or if the options are not present in the json file.',  # noqa:E501,W504
+        'FIELDS': """name         field representing first name
+surname         field representing last name
+email           field representing an email address
+birthday        will populate field with date information
+phone           field representing a phone number
+company         will populate with company names
+user_id         field representing a user identification
+address         will populate with home/business address
+city            will populate with city names (not in sync with region for country)
+region          will populate with region names (State or Province) (not in sync with city or country)
+country         will populate with country names (not in sync with city or region)
+coordinates     will populate with latitude and longitude
+cvisa           represents a visa card (credit)
+cvisa_cvv       represents the visa card verification value
+cmastercard     represents a mastercard card (credit)
+cmastercard_cvv represents the mastercard card verification value
+username        will populate with usernames (first leter of name plus surname)
+password        will populate with random password strings
+salary          an amount that represents a salary
+children        an integer representing the number of children of a person
+price           an amount representing the price of a product
+stock           an integer representing the product availability
+contact         field representing someone's contact
+quantity        an integer representing some quantity (amount of products sold, for exemple)
+date            a date field (similar to birthday)
+invoice         an integer representing an invoice number""",
     }
     usage_help = {
         'General': usage_general,
