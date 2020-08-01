@@ -113,7 +113,7 @@ class Param_Creator():
                 'gdTitle': 'user_id',
                 'gdDataType': 'data-type-PersonalNumber',
                 'dtOption': 'PersonalNumberWithoutHyphen',
-                'dtOptionPersonalNumber_sep': '+'}},
+                'dtOptionPersonalNumber_sep': ''}},
             {'address': {
                 'gdTitle': 'address',
                 'gdDataType': 'data-type-StreetAddress'}},

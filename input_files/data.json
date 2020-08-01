@@ -2,13 +2,13 @@
   "tables": [
     {"customers": {
       "quantity": 70,
-      "items": ["name", "surname", "children", "birthday", "city", "address"]}
+      "items": ["name", "surname", "birthday", "address", "city", "region", "country"]}
     },
     {"customers_vip": {
       "quantity": 15,
       "drop_if_exists": true,
       "id_increment": false,
-      "items": ["name", "surname", "children", "birthday", "city", "address", "cvisa", "cvisa_cvv", "cmastercard", "cmastercard_cvv"]}
+      "items": ["name", "surname", "birthday", "city", "address", "cvisa", "cvisa_cvv", "cmastercard", "cmastercard_cvv"]}
     },
     {"hr": {
       "quantity": 8,
@@ -50,10 +50,10 @@
     {"sales": {
       "quantity": 80,
       "drop_if_exists": true,
-      "items": [{"customers": "id"}, {"products": "name"}, {"sales_dept": "id"}, "quantity", "date", "invoice"]}
+      "items": [{"customers": "id"}, {"products": "id"}, {"sales_dept": "id"}, "quantity", "date", "invoice"]}
     },
     {"supplies": {
       "quantity": 40,
-      "items": [{"suppliers": "id"}, {"products": "name"}, "quantity", "date", "invoice"]}
+      "items": [{"suppliers": "id"}, {"products": "id"}, "quantity", "date", "invoice"]}
     }
   ]}
