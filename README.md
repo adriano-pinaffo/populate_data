@@ -1,7 +1,7 @@
 # populate_data
 This project delivers a Python program that populates a database.
 The main use-case for this is for people training with relational databases and need to generate random data in tables.
-Another use-case is the one for people practicing their programming skills and want to play around with some elements and modules.
+Another use-case is the one for people practicing their programming skills and want to play around with some elements and modules in python.
 This project is a personal development that should, in no way, be used in production environments.
 
 This program will randomly download specific data from the Internet and feed tables in a local database. The data sources in the Internet are generatedata.com and randomlists.com.
