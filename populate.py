@@ -67,7 +67,7 @@ contact         field representing someone's contact
 quantity        an integer representing some quantity (amount of products sold, for exemple)
 date            a date field (similar to birthday)
 invoice         an integer representing an invoice number""",
-        'LIMITATIONS': 'This program will download at most 100 items at a time. Future releases may change that.\nThe column name in the database has exactly the same name of the field indicated in the JSON file. Future releases may decouple the name of the column and the field in the JSON file.\nThis program is partially based on generatedata.com (older v3 version), which will be available until Dec 31, 2026',  # noqa:E501
+        'LIMITATIONS': 'This program will download at most 100 items at a time. Future releases may change that.\nThe column name in the database has exactly the same name of the field indicated in the JSON file. Future releases may decouple the name of the column and the field in the JSON file.\n   This program is partially based on generatedata.com (older v3 version), which will be available until Dec 31, 2026',  # noqa:E501
         'CONTACT': 'Contact the author or inform bugs by using the github repository of this project at https://github.com/adriano-pinaffo/populate_data',  # noqa:E501
     }
     usage_help = {

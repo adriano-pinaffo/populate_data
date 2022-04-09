@@ -134,6 +134,7 @@ class Data():
             # Creates a new table
             ws.wprint('Creating ' + table_name + '...', 2)
             sql = 'CREATE TABLE IF NOT EXISTS ' + table_name + '('
+            foreign_keys = [];
             if options['id_increment'] is True:
                 sql += '`id` mediumint(8) unsigned NOT NULL auto_increment, '
 
@@ -154,8 +155,9 @@ class Data():
                     fkeys_types[f'{table}__{key}'] = found_key[1]
                     table_key = table + '__' + found_key[0]
                     tables_keys += table_key + ', '
+                    foreign_keys.append(f'FOREIGN KEY ({table}__{key}) REFERENCES {table}({key}) ON DELETE SET NULL')
 
-                    sql += f'`{table_key}` {found_key[1]} NOT NULL, '
+                    sql += f'`{table_key}` {found_key[1]} NULL, '
 
             for col in self._args_details:
                 column_name = list(col.keys())[0]
@@ -178,7 +180,10 @@ class Data():
                 sql += 'PRIMARY KEY (`id`)'
             else:
                 sql = sql[:-2]
+            sql += ', ' + ', '.join(foreign_keys) if len(foreign_keys) > 0 else '';
             sql += ')'
+            print('sql string: ', sql)
+            input()
             cursor.execute(sql)
 
             # Inserts data into the newly created table
