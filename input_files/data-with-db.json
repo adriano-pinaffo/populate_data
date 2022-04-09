@@ -62,7 +62,6 @@
   "database": {
       "host": "localhost",
       "username": "myuser",
-      "password": "mypass",
       "database": "test",
       "drop_if_exists": false,
       "id_increment": true}

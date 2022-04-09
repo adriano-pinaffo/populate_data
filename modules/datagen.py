@@ -14,7 +14,7 @@ class Post_Creator():
 
     def __init__(self, **kwargs):
         """Initialize the class."""
-        self._url = 'https://generatedata.com/ajax.php'
+        self._url = 'https://generatedata3.com/ajax.php'
         self._headers = {
             'Accept': 'application/json, text/javascript, */*; q=0.01',
             'Accept-Language': 'en-US,en;q=0.5',

@@ -67,7 +67,7 @@ contact         field representing someone's contact
 quantity        an integer representing some quantity (amount of products sold, for exemple)
 date            a date field (similar to birthday)
 invoice         an integer representing an invoice number""",
-        'LIMITATIONS': 'This program will download at most 100 items at a time. Future releases may change that.\nThe column name in the database has exactly the same name of the field indicated in the JSON file. Future releases may decouple the name of the column and the field in the JSON file.',  # noqa:E501
+        'LIMITATIONS': 'This program will download at most 100 items at a time. Future releases may change that.\nThe column name in the database has exactly the same name of the field indicated in the JSON file. Future releases may decouple the name of the column and the field in the JSON file.\nThis program is partially based on generatedata.com (older v3 version), which will be available until Dec 31, 2026',  # noqa:E501
         'CONTACT': 'Contact the author or inform bugs by using the github repository of this project at https://github.com/adriano-pinaffo/populate_data',  # noqa:E501
     }
     usage_help = {
@@ -105,12 +105,12 @@ def main():
         verbosity = None
         quiet = None
         gvars = {
-            'host': {'current': None, 'default': 'localhost'},
-            'username': {'current': None, 'default': pwd.getpwuid(os.getuid()).pw_name},
-            'password': {'current': None, 'default': ''},
-            'database': {'current': None, 'default': 'test'},
-            'drop_if_exists': {'current': None, 'default': False},
-            'id_increment': {'current': None, 'default': True},
+            'host': {'current': None, 'default': 'localhost', 'set': False},
+            'username': {'current': None, 'default': pwd.getpwuid(os.getuid()).pw_name, 'set': False},
+            'password': {'current': None, 'default': '', 'set': False},
+            'database': {'current': None, 'default': 'test', 'set': False},
+            'drop_if_exists': {'current': None, 'default': False, 'set': False},
+            'id_increment': {'current': None, 'default': True, 'set': False},
         }
         tvars = []
 
@@ -137,22 +137,28 @@ def main():
                 if gvars['host']['current'] is not None:
                     raise getopt.GetoptError('duplicated option: ' + o)
                 gvars['host']['current'] = v
+                gvars['host']['set'] = True
             elif o in ['-u', '--username']:
                 if gvars['username']['current'] is not None:
                     raise getopt.GetoptError('duplicated option: ' + o)
                 gvars['username']['current'] = v
+                gvars['username']['set'] = True
             elif o in ['-p', '--password']:
                 if gvars['password']['current'] is not None:
                     raise getopt.GetoptError('duplicated option: ' + o)
                 gvars['password']['current'] = v
+                gvars['password']['set'] = True
             elif o in ['-d', '--database']:
                 if gvars['database']['current'] is not None:
                     raise getopt.GetoptError('duplicated option: ' + o)
                 gvars['database']['current'] = v
+                gvars['database']['set'] = True
             elif o in ['--drop_if_exists']:
                 gvars['drop_if_exists']['current'] = True
+                gvars['drop_if_exists']['set'] = True
             elif o in ['--id_increment']:
                 gvars['id_increment']['current'] = True
+                gvars['id_increment']['set'] = True
             elif o in ['-t', '--table']:
                 tvars.append('tables:' + v)
             elif o in ['-x', '--transaction']:
@@ -174,7 +180,10 @@ def main():
             data['transactions'] = []
 
         for item, obj in gvars.items():
-            data['database'][item] = obj['default'] if obj['current'] is None else obj['current']
+            if item in data['database']:
+                data['database'][item] = obj['current'] if obj['set'] is True else data['database'][item]
+            else:
+                data['database'][item] = obj['current'] if obj['set'] is True else obj['default']
 
         data = datagen.parse_options(tvars, data)
 

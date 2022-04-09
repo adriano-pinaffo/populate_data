@@ -65,6 +65,23 @@ Noitce that the only difference is that you need to provide as the "foreigner ke
 <br><img src="readme_files/populate_several_tables_json.gif" width=700px>
 <br>Instead of typing the tables in the command line, you can choose to have all of your configuration (including the database connection) in a JSON file. Use -i option to input that file and load the configuration. Check out the "input_files" folder that comes with 2 examples of such files, one with the database connection and one without it.
 
+<h3>Requirements</h3>
+<br>This program requires:
+<ul>
+<li>mysql/mariadb installed with a database created</li>
+<li>python package <pre>mysqlclient</pre> installed. This package may require Python 3 and MySQL development headers and libraries, which can be installed like this:
+<pre><code>
+$ sudo apt-get install python3-dev default-libmysqlclient-dev build-essential # Debian / Ubuntu
+% sudo yum install python3-devel mysql-devel # Red Hat / CentOS
+</code></pre>
+
+Then install <pre>mysqlclient</pre> via pip:
+<pre><code>
+$ pip install mysqlclient
+</code></pre>
+</li>
+<li>This program is using the older version of <a href="https://generatedata.com/">generatedata.com</a> <a href="https://generatedata3.com/">(old v3)</a></li>
+</ul>
 
 ## Fields
 <table>
