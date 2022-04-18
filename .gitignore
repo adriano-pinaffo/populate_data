@@ -10,3 +10,9 @@ __pycache__
 # NPM modules
 node_modules
 package*.json
+
+# VIM open files
+*.*.swp
+
+# output tests
+output.txt

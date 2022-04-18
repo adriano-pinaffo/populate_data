@@ -276,15 +276,6 @@ class Param_Creator():
                 'gdDataType': 'data-type-AlphaNumeric',
                 'dtExample': 'LLLxxLLLxLL',
                 'dtOption': 'LLLxxLLLxLL'}},
-            # {'salary': {
-            #     'gdTitle': 'salary',
-            #     'gdDataType': 'data-type-Currency',
-            #     'dtExample': 'XXX.XX|0.00|100.00|$|prefix',
-            #     'dtCurrencyFormat': 'XXXXXX.XX',
-            #     'dtCurrencyRangeFrom': '1000.00',
-            #     'dtCurrencyRangeTo': '100000.00',
-            #     'dtCurrencySymbol': '$',
-            #     'dtCurrencySymbolLocation': 'prefix'}},
             {'salary': {
                 'gdTitle': 'salary',
                 'gdDataType': 'data-type-NumberRange',
@@ -295,15 +286,6 @@ class Param_Creator():
                 'gdDataType': 'data-type-NumberRange',
                 'dtNumRangeMin': '0',
                 'dtNumRangeMax': '5'}},
-            # {'price': {
-            #     'gdTitle': 'price',
-            #     'gdDataType': 'data-type-Currency',
-            #     'dtExample': 'XXX.XX|0.00|100.00|$|prefix',
-            #     'dtCurrencyFormat': 'XXXXXX.XX',
-            #     'dtCurrencyRangeFrom': '10.00',
-            #     'dtCurrencyRangeTo': '1000.00',
-            #     'dtCurrencySymbol': '$',
-            #     'dtCurrencySymbolLocation': 'prefix'}},
             {'price': {
                 'gdTitle': 'price',
                 'gdDataType': 'data-type-NumberRange',
@@ -422,6 +404,8 @@ class Warning_Singleton():
     def eprint(self, mess):
         """Prints error message to stderr."""
         sys.stderr.write(f'{mess}\n')
+        err = Error()
+        err.error = 1
 
     def sh_exc(self, exc_info, e):
         """Deals with exception."""
@@ -618,5 +602,22 @@ def parse_options(args, data):
                 data[re.match('[^:]+', tb_items)[0]].append(tbi)
     except BaseException as e:
         ws.sh_exc(sys.exc_info(), e)
-
     return data
+
+def do_list(**kwargs):
+    """Calls db list."""
+    ws = Warning_Singleton()
+    try:
+        db_handler = database.handle_db(**kwargs.get('database'))
+        db_handler.list(kwargs.get('list_options'))
+    except BaseException as e:
+        ws.sh_exc(sys.exc_info(), e)
+
+def do_drop(**kwargs):
+    """Calls db drop."""
+    ws = Warning_Singleton()
+    try:
+        db_handler = database.handle_db(**kwargs.get('database'))
+        db_handler.drop(kwargs.get('drop_options'))
+    except BaseException as e:
+        ws.sh_exc(sys.exc_info(), e)

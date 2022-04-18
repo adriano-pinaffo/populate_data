@@ -13,13 +13,16 @@ def usage(*args, **kwargs):
     """Usage function."""
     print('Usage:', sys.argv[0], '[OPTIONS]')
 
+    usage_commands = {
+        'create|mk': 'creates tables and populates them with data (default)',
+        'list|ls': 'lists all tables in the database',
+        'drop|rm': 'drops tables',
+    }
     usage_general = {
         '    --help': 'Shows this help',
         '-i, --input': 'Loads json file with structure',
         '-v[vv]': 'Verbosity (up to 3 levels). Default is 1',
         '-q, --quiet': 'Quiet mode, overrides -v',
-        '    --drop_if_exists': 'Drops the tables before creating them',
-        '    --id_increment': 'Creates `id` primary key for tables (can be overwritten by specific id_increment)',
     }
     usage_database = {
         '-h, --host': 'Host used for database connection. Default is localhost.',
@@ -27,9 +30,21 @@ def usage(*args, **kwargs):
         '-p, --password=pass': 'Password used for database connection. Default is Blank',
         '-d, --database=database': "Database name used for database connection. Default is 'test'",
     }
-    usage_tables = {
+    usage_create = {
+        '    --drop_if_exists': 'Drops the tables before creating them',
+        '    --id_increment': 'Creates `id` primary key for tables (can be overwritten by specific id_increment)',
         '-t, --table=table': 'table(s) and options. Check TABLES section for details',
         '-x, --transaction=transaction': 'transaction(s) and options. Check TABLES section for detail.',
+    }
+    usage_list = {
+        '    --no-header': 'Hides the header (applicable only when format is table )',
+        '-f, --format=[table,json]': 'Outputs tables in table format (default) or json (string representing json)',
+        '-o, --output=path': 'Outputs result to a file',
+    }
+    usage_drop = {
+        '-t, --table=[table1,table2,...]': 'Lists tables to drop, otherwise all tables are dropped',
+        '-r, --respect-foreign-keys': 'Respect foreign keys constraint (ignore foreign keys constraints by default)',
+        '-y, --yes': 'Reply yes to all',
     }
     notes = {
         'GENERAL NOTES': 'Table data can be informed in the command line or in a separate JSON file. If the same item is specified in both places, the command line takes precedence. If the table options (drop_if_exists and id_increment) are not specified anywhere, the default values will be used. If table columns are specified in both the command line and the separate JSON file, all of the fields will be used (caution: duplicated field names will cause errors)',  # noqa:E501
@@ -71,24 +86,30 @@ invoice         an integer representing an invoice number""",
         'CONTACT': 'Contact the author or inform bugs by using the github repository of this project at https://github.com/adriano-pinaffo/populate_data',  # noqa:E501
     }
     usage_help = {
+        'Commands': usage_commands,
         'General': usage_general,
         'Database': usage_database,
-        'Tables and Transactions': usage_tables,
-        'notes': notes,
+        'Create Options': usage_create,
+        'List Options': usage_list,
+        'Drop Options': usage_drop,
+        'Notes': notes,
     }
 
-    min_col = 20
-    col_width = max([len(opt[0]) for opt in kwargs['opts']]) + min_col  # noqa:C407
-    print()
+    keys = []
+    keys_sections = [key for key in [list(item.keys()) for item in [usage_help[opt] for opt in usage_help]]]
+    for items in keys_sections:
+        keys += items
+    col_width = max([len(item) for item in keys])
+    # col_width = max([len(opt[0]) for opt in kwargs['opts']]) + min_col  # noqa:C407
     for key, item in usage_help.items():
-        print('  ' + key)
+        print('  \n' + key)
         for row in list(item.items()):
-            if key != 'notes':
-                print('   ', row[0].ljust(col_width), row[1])
+            if key != 'Notes':
+                print('  ', row[0].ljust(col_width), row[1])
             else:
                 print()
                 print(row[0])
-                print('   ' + row[1])
+                print('    ' + row[1])
 
 
 def main():
@@ -100,6 +121,7 @@ def main():
         args = None
         jsonfile = None
         data = None
+        command = 'create'
 
         # Global vars
         verbosity = None
@@ -113,12 +135,51 @@ def main():
             'id_increment': {'current': None, 'default': True, 'set': False},
         }
         tvars = []
+        lvars = {
+            'header': True,
+            'format': 'table',
+            'output': None,
+        }
+        dvars = {
+            'table': None,
+            'respectForeignKeys': False,
+            'yesAll': False,
+        }
 
-        defopts = ['help', 'input=', 'quiet', 'host=', 'username=', 'password=', 'database=', 'drop_if_exists', 'id_increment', 'table', 'transaction']  # noqa:E501
-        opts, args = getopt.getopt(sys.argv[1:], 'i:vqh:u:p:d:t:x:', defopts)
-        if opts == []:
-            usage(opts=defopts)
+        sys_args = sys.argv[1:];
+        if len(sys_args) == 0:
+            usage()
             sys.exit(err.error)
+
+        if sys_args[0] == 'create' or sys_args[0] == 'mk':
+            command = 'create'
+            sys_args = sys_args[1:];
+        elif sys_args[0] == 'list' or sys_args[0] == 'ls':
+            command = 'list'
+            sys_args = sys_args[1:];
+        elif sys_args[0] == 'drop' or sys_args[0] == 'rm':
+            command = 'drop'
+            sys_args = sys_args[1:];
+
+        defopts = [
+            'help',
+            'input=',
+            'quiet',
+            'host=',
+            'username=',
+            'password=',
+            'database=',
+            'drop_if_exists',
+            'id_increment',
+            'table',
+            'transaction',
+            'no-header',
+            'format=',
+            'output=',
+            'respect-foreign-keys',
+            'yes',
+        ]
+        opts, args = getopt.getopt(sys_args, 'i:vqh:u:p:d:t:x:f:o:ry', defopts)
         for o, v in opts:
             if o in ['--help']:
                 usage(opts=defopts)
@@ -160,9 +221,22 @@ def main():
                 gvars['id_increment']['current'] = True
                 gvars['id_increment']['set'] = True
             elif o in ['-t', '--table']:
-                tvars.append('tables:' + v)
+                if command == 'create':
+                    tvars.append('tables:' + v)
+                elif command == 'drop':
+                    dvars['table'] = v.split(',')
             elif o in ['-x', '--transaction']:
                 tvars.append('transactions:' + v)
+            elif o in ['--no-header']:
+                lvars['header'] = False
+            elif o in ['-f', '--format']:
+                lvars['format'] = v
+            elif o in ['-o', '--output']:
+                lvars['output'] = v
+            elif o in ['-r', '--respect-foreign-keys']:
+                dvars['respectForeignKeys'] = True
+            elif o in ['-y', '--yes']:
+                dvars['yesAll'] = True
             else:
                 raise AssertionError('unhandled option')
 
@@ -186,6 +260,8 @@ def main():
                 data['database'][item] = obj['current'] if obj['set'] is True else obj['default']
 
         data = datagen.parse_options(tvars, data)
+        data['list_options'] = lvars
+        data['drop_options'] = dvars
 
         if verbosity is None:
             verbosity = 1
@@ -194,11 +270,16 @@ def main():
 
         ws.params = (verbosity, quiet)
 
-        ws.wprint('Starting populate...', 0)
-        datagen.do_it(**data)
+        if command == 'create':
+            ws.wprint('Starting populate...', 0)
+            datagen.do_it(**data)
 
-        ws.wprint('', 1)
-        ws.wprint(f'Populate finished {"successfuly" if err.error == 0 else "with error"}.', 0)
+            ws.wprint('', 1)
+            ws.wprint(f'Populate finished {"successfuly" if err.error == 0 else "with error"}.', 0)
+        elif command == 'list':
+            datagen.do_list(**data)
+        elif command == 'drop':
+            datagen.do_drop(**data)
 
     except getopt.GetoptError as e:
         ws.sh_exc(sys.exc_info(), e)
